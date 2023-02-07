@@ -1,6 +1,7 @@
+package Client;
+
 import UI.MessengerWindowUI;
 import UI.StartWindowUI;
-
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
@@ -24,8 +25,9 @@ public class ChatWindow {
             MessengerWindowUI.sendMessageButton.addActionListener(e->{
                 String message = MessengerWindowUI.sendMessageField.getText();
                 try{
-                    outputStream.writeUTF(name+"> "+message);
+                    outputStream.writeUTF(name+">"+message);
                     MessengerWindowUI.sendMessageField.setText("");
+                    MessengerWindowUI.enterMessage(message, name);
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }

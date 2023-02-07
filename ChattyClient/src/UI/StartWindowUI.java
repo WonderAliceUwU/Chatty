@@ -1,6 +1,8 @@
 package UI;
 
-import CustomElements.RoundJButton;
+import javax.swing.plaf.basic.BasicButtonUI;
+
+import CustomElements.CustomJButtonUI;
 import CustomElements.RoundJTextField;
 import javax.swing.*;
 import java.awt.*;
@@ -40,10 +42,12 @@ public class StartWindowUI {
         nicknameField.setFont(customRegularFont);
         nicknameField.setBounds(105, 280, 200, 30);
 
-        loginButton = new RoundJButton("Join");
+        loginButton = new JButton("Join");
+        loginButton.setOpaque(false);
         loginButton.setFont(customRegularFont);
         loginButton.setBounds(165, 330, 80, 25);
         loginButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        loginButton.setUI(new CustomJButtonUI());
 
         startWindow.add(label);
         startWindow.add(errorLabel);
@@ -54,6 +58,17 @@ public class StartWindowUI {
     public static Font createNormalFont(){
         try{
             Font customFont = Font.createFont(Font.TRUETYPE_FONT, new File("Fonts/OpenSans.ttf")).deriveFont(15f);
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            ge.registerFont(customFont);
+            return customFont;
+        } catch (IOException | FontFormatException e) {
+            System.out.println("Error with the font");
+        }
+        return null;
+    }
+    public static Font createLabelFont(){
+        try{
+            Font customFont = Font.createFont(Font.TRUETYPE_FONT, new File("Fonts/OpenSans.ttf")).deriveFont(10f);
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
             ge.registerFont(customFont);
             return customFont;

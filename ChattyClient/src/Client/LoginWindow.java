@@ -1,6 +1,8 @@
+package Client;
+
 import UI.StartWindowUI;
 public class LoginWindow {
-    protected static String nickname;
+    public static String nickname;
     public static void main(String[] args) {
         StartWindowUI.createWindow();
         StartWindowUI.loginButton.addActionListener(e -> {

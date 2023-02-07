@@ -1,3 +1,5 @@
+package Client;
+
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.Socket;
@@ -17,9 +19,12 @@ public class ChatThread extends Thread{
         while (true) {
             try {
                 String message = inputStream.readUTF();
-                System.out.println(message);
+                String [] splitMessage = message.split(">");
+                if(!splitMessage[0].equals(LoginWindow.nickname)){
+                    UI.MessengerWindowUI.enterMessage(splitMessage[1], splitMessage[0]);
+                }
             } catch (IOException e) {
-                e.printStackTrace();
+                System.exit(0);
             }
         }
     }

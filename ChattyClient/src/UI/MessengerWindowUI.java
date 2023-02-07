@@ -1,9 +1,11 @@
 package UI;
-
+import Client.LoginWindow;
+import CustomElements.CustomScrollBarUI;
+import CustomElements.RoundJTextArea;
 import CustomElements.RoundJTextField;
-
 import javax.swing.*;
 import java.awt.*;
+import java.time.LocalTime;
 
 public class MessengerWindowUI {
     public static JFrame messengerWindowFrame;
@@ -11,6 +13,8 @@ public class MessengerWindowUI {
     public static JTextField sendMessageField;
     public static JButton sendMessageButton;
     public static JPanel chatPanel;
+    public static RoundJTextArea text;
+    public static JScrollPane scrollFrame;
     public static void createWindow() {
         Font customRegularFont = StartWindowUI.createNormalFont();
         Font customTitleFont = StartWindowUI.createTitleFont();
@@ -24,7 +28,8 @@ public class MessengerWindowUI {
         messengerWindowFrame.setLocationRelativeTo(null);
         messengerWindowFrame.setResizable(false);
 
-        welcomeLabel = new JLabel("You're chatting as", getIcon("Images/UserIcon.png"), SwingConstants.CENTER);
+
+        welcomeLabel = new JLabel("You're chatting as", getIcon("Images/UserIcon.png", 50, 50), SwingConstants.CENTER);
         assert customTitleFont != null;
         welcomeLabel.setFont(customTitleFont.deriveFont(Font.BOLD));
         welcomeLabel.setForeground(Color.white);
@@ -34,33 +39,23 @@ public class MessengerWindowUI {
         sendMessageField.setFont(customRegularFont);
         sendMessageField.setBounds(20, 615, 520, 40);
 
-        sendMessageButton = new JButton(getSmallerIcon("Images/SendMessageIcon.png"));
+        sendMessageButton = new JButton(getIcon("Images/SendMessageIcon.png", 30, 30));
         sendMessageButton.setBounds(550, 620, 30, 30);
         sendMessageButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
 
         chatPanel = new JPanel();
-        chatPanel.setPreferredSize(new Dimension( 480,470));
+        chatPanel.setPreferredSize(new Dimension( 480,480));
         chatPanel.setLayout(null);
         chatPanel.setAutoscrolls(true);
         chatPanel.setBackground(Color.decode("#20262E"));
 
-
-        JScrollPane scrollFrame = new JScrollPane(chatPanel);
+        scrollFrame = new JScrollPane(chatPanel);
+        scrollFrame.setBorder(BorderFactory.createEmptyBorder());
         scrollFrame.setBounds(50, 100, 500, 480);
-
-        String message = " Hey how you doing";
-
-        JTextArea text = new JTextArea(message ,1 , 1);
-        text.setLocation(15, 50);
-        text.setEditable(false);
-        text.setLineWrap( true );
-        text.setWrapStyleWord( true );
-        text.setBackground(Color.decode("#E9E8E8"));
-        text.setFont(customRegularFont);
-        text.setForeground(Color.black);
-
-        chatPanel.add(text);
+        scrollFrame.getVerticalScrollBar().setUI(new CustomScrollBarUI());
+        scrollFrame.getVerticalScrollBar().setBackground(Color.decode("#20262E"));
+        scrollFrame.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
         messengerWindowFrame.add(scrollFrame);
         messengerWindowFrame.add(welcomeLabel);
@@ -68,40 +63,130 @@ public class MessengerWindowUI {
         messengerWindowFrame.add(sendMessageField);
         messengerWindowFrame.setVisible(true);
     }
-    private static ImageIcon getIcon(String iconPath) {
-        return new ImageIcon(iconPath) {
-            @Override
-            public int getIconWidth() {
-                return 50;
-            }
-
-            @Override
-            public int getIconHeight() {
-                return 50;
-            }
-            @Override
-            public synchronized void paintIcon(Component c, Graphics g,
-                                               int x, int y) {
-                g.drawImage(getImage(), x, y, 50, 50, null);
-            }
-        };
+    private static ImageIcon getIcon(String iconPath, int width, int height) {
+        ImageIcon imageIcon = new ImageIcon(iconPath);
+        Image newimg = imageIcon.getImage().getScaledInstance(50, 50, java.awt.Image.SCALE_SMOOTH);
+        return new ImageIcon(newimg);
     }
-    private static ImageIcon getSmallerIcon(String iconPath) {
-        return new ImageIcon(iconPath) {
-            @Override
-            public int getIconWidth() {
-                return 30;
-            }
+    public static void enterMessage(String message, String nickname){
+        JScrollBar vertical = MessengerWindowUI.scrollFrame.getVerticalScrollBar();
 
-            @Override
-            public int getIconHeight() {
-                return 30;
+        JLabel messageInfo = new JLabel();
+        if(LocalTime.now().getMinute() < 10){
+            messageInfo.setText(LoginWindow.nickname + " - " + LocalTime.now().getHour() + ":0"+LocalTime.now().getMinute());
+        }
+        else{
+            messageInfo.setText(nickname + " - " + LocalTime.now().getHour() + ":"+LocalTime.now().getMinute());
+        }
+        messageInfo.setFont(StartWindowUI.createLabelFont());
+        messageInfo.setForeground(Color.decode("#E9E8E8"));
+
+        RoundJTextArea text = new RoundJTextArea(message, 1, 1);
+        text.setLocation(15, vertical.getMaximum());
+        text.setMaximumSize(new Dimension(280, 80));
+        text.setPreferredSize(new Dimension(280, 80));
+        text.setEditable(false);
+        text.setMargin( new Insets(0,5,0,0) );
+        text.setLineWrap( true );
+        text.setWrapStyleWord( true );
+        text.setBackground(Color.decode("#E9E8E8"));
+        text.setFont(StartWindowUI.createNormalFont());
+        text.setForeground(Color.black);
+
+        if(nickname.equals(LoginWindow.nickname)){
+            if(message.length() < 5)  {
+                text.setSize(40, 25);
+                text.setLocation(chatPanel.getWidth() - text.getWidth() - 20, vertical.getMaximum());
+                MessengerWindowUI.chatPanel.setPreferredSize(new Dimension( MessengerWindowUI.chatPanel.getWidth(),
+                        MessengerWindowUI.chatPanel.getHeight() + 45));
+                messageInfo.setBounds(chatPanel.getWidth() - 114,  text.getY() - 13, 300, 10);
             }
-            @Override
-            public synchronized void paintIcon(Component c, Graphics g,
-                                               int x, int y) {
-                g.drawImage(getImage(), x, y, 30, 30, null);
+            if (message.length() <= 10 && message.length() >= 5) {
+                text.setSize(message.length()*12, 25);
+                text.setLocation(chatPanel.getWidth() - text.getWidth() - 20, vertical.getMaximum());
+                MessengerWindowUI.chatPanel.setPreferredSize(new Dimension( MessengerWindowUI.chatPanel.getWidth(),
+                        MessengerWindowUI.chatPanel.getHeight() + 45));
+                messageInfo.setBounds(chatPanel.getWidth() - 114,  text.getY() - 13, 300, 10);
             }
-        };
+            if (message.length() <= 40 && message.length() > 10) {
+                text.setSize(message.length()*9, 25);
+                text.setLocation(chatPanel.getWidth() - text.getWidth() - 20, vertical.getMaximum());
+                MessengerWindowUI.chatPanel.setPreferredSize(new Dimension( MessengerWindowUI.chatPanel.getWidth(),
+                        MessengerWindowUI.chatPanel.getHeight() + 50));
+                messageInfo.setBounds(chatPanel.getWidth() - 114,  text.getY() - 13, 300, 10);
+            }
+            if (message.length() <= 68 && message.length() > 40) {
+                text.setRows(2);
+                text.setSize(message.length()*5, 45);
+                text.setLocation(chatPanel.getWidth() - text.getWidth() - 20, vertical.getMaximum());
+                MessengerWindowUI.chatPanel.setPreferredSize(new Dimension( MessengerWindowUI.chatPanel.getWidth(),
+                        MessengerWindowUI.chatPanel.getHeight() + 62));
+                messageInfo.setBounds(chatPanel.getWidth() - 114,  text.getY() - 13, 300, 10);
+            }
+            if (message.length() <= 120 && message.length() > 68) {
+                text.setRows(3);
+                text.setSize(message.length()*3, 65);
+                text.setLocation(chatPanel.getWidth() - text.getWidth() - 20, vertical.getMaximum());
+                MessengerWindowUI.chatPanel.setPreferredSize(new Dimension( MessengerWindowUI.chatPanel.getWidth(),
+                        MessengerWindowUI.chatPanel.getHeight() + 85));
+                messageInfo.setBounds(chatPanel.getWidth() - 114,  text.getY() - 13, 300, 10);
+            }
+            if (message.length() <= 150 && message.length() > 120) {
+                text.setRows(4);
+                text.setSize(message.length()*2, 85);
+                text.setLocation(chatPanel.getWidth() - text.getWidth() - 20, vertical.getMaximum());
+                MessengerWindowUI.chatPanel.setPreferredSize(new Dimension( MessengerWindowUI.chatPanel.getWidth(),
+                        MessengerWindowUI.chatPanel.getHeight() + 105));
+                messageInfo.setBounds(chatPanel.getWidth() - 114,  text.getY() - 13, 300, 10);
+            }
+        }
+        else{
+            if(message.length() < 5)  {
+                text.setSize(40, 25);
+                MessengerWindowUI.chatPanel.setPreferredSize(new Dimension( MessengerWindowUI.chatPanel.getWidth(),
+                        MessengerWindowUI.chatPanel.getHeight() + 45));
+                messageInfo.setBounds(text.getX(),  text.getY() - 13, 300, 10);
+            }
+            if (message.length() <= 10 && message.length() >= 5) {
+                text.setSize(message.length()*12, 25);
+                MessengerWindowUI.chatPanel.setPreferredSize(new Dimension( MessengerWindowUI.chatPanel.getWidth(),
+                        MessengerWindowUI.chatPanel.getHeight() + 45));
+                messageInfo.setBounds(text.getX(),  text.getY() - 13, 300, 10);
+            }
+            if (message.length() <= 40 && message.length() > 10) {
+                text.setSize(message.length()*9, 25);
+                MessengerWindowUI.chatPanel.setPreferredSize(new Dimension( MessengerWindowUI.chatPanel.getWidth(),
+                        MessengerWindowUI.chatPanel.getHeight() + 50));
+                messageInfo.setBounds(text.getX(),  text.getY() - 18, 300, 20);
+            }
+            if (message.length() <= 68 && message.length() > 40) {
+                text.setRows(2);
+                text.setSize(message.length()*5, 45);
+                MessengerWindowUI.chatPanel.setPreferredSize(new Dimension( MessengerWindowUI.chatPanel.getWidth(),
+                        MessengerWindowUI.chatPanel.getHeight() + 62));
+                messageInfo.setBounds(text.getX(),  text.getY() - 18, 300, 20);
+            }
+            if (message.length() <= 120 && message.length() > 68) {
+                text.setRows(3);
+                text.setSize(message.length()*3, 65);
+                MessengerWindowUI.chatPanel.setPreferredSize(new Dimension( MessengerWindowUI.chatPanel.getWidth(),
+                        MessengerWindowUI.chatPanel.getHeight() + 85));
+                messageInfo.setBounds(text.getX(),  text.getY() - 18, 300, 20);
+            }
+            if (message.length() <= 150 && message.length() > 120) {
+                text.setRows(4);
+                text.setSize(message.length()*2, 85);
+                MessengerWindowUI.chatPanel.setPreferredSize(new Dimension( MessengerWindowUI.chatPanel.getWidth(),
+                        MessengerWindowUI.chatPanel.getHeight() + 105));
+                messageInfo.setBounds(text.getX(),  text.getY() - 18, 300, 20);
+            }
+        }
+
+        MessengerWindowUI.chatPanel.add(messageInfo);
+        MessengerWindowUI.chatPanel.add(text);
+        MessengerWindowUI.chatPanel.updateUI();
+
+        SwingUtilities.invokeLater(() -> scrollFrame.getVerticalScrollBar().setValue(scrollFrame.getVerticalScrollBar().getMaximum()));
     }
+
 }
