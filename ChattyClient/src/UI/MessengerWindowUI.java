@@ -2,7 +2,7 @@ package UI;
 import Client.LoginWindow;
 import CustomElements.CustomScrollBarUI;
 import CustomElements.RoundJTextArea;
-import CustomElements.RoundJTextField;
+import CustomElements.RoundJTextFieldHint;
 import javax.swing.*;
 import java.awt.*;
 import java.time.LocalTime;
@@ -35,7 +35,7 @@ public class MessengerWindowUI {
         welcomeLabel.setForeground(Color.white);
         welcomeLabel.setBounds(JLabel.CENTER, 20, 600, 50);
 
-        sendMessageField = new RoundJTextField(0);
+        sendMessageField = new RoundJTextFieldHint(0, "Put some nice things");
         sendMessageField.setFont(customRegularFont);
         sendMessageField.setBounds(20, 615, 520, 40);
 
@@ -65,7 +65,7 @@ public class MessengerWindowUI {
     }
     private static ImageIcon getIcon(String iconPath, int width, int height) {
         ImageIcon imageIcon = new ImageIcon(iconPath);
-        Image newimg = imageIcon.getImage().getScaledInstance(50, 50, java.awt.Image.SCALE_SMOOTH);
+        Image newimg = imageIcon.getImage().getScaledInstance(width, height, java.awt.Image.SCALE_SMOOTH);
         return new ImageIcon(newimg);
     }
     public static void enterMessage(String message, String nickname){

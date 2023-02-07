@@ -1,9 +1,7 @@
 package UI;
 
-import javax.swing.plaf.basic.BasicButtonUI;
-
 import CustomElements.CustomJButtonUI;
-import CustomElements.RoundJTextField;
+import CustomElements.RoundJTextFieldHint;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
@@ -38,7 +36,7 @@ public class StartWindowUI {
         errorLabel.setBounds(115, 370, 350, 20);
         errorLabel.setVisible(false);
 
-        nicknameField = new RoundJTextField(0);
+        nicknameField = new RoundJTextFieldHint(0, "");
         nicknameField.setFont(customRegularFont);
         nicknameField.setBounds(105, 280, 200, 30);
 
