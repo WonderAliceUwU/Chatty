@@ -16,8 +16,8 @@ public class MessengerWindowUI {
     public static RoundJTextArea text;
     public static JScrollPane scrollFrame;
     public static void createWindow() {
-        Font customRegularFont = StartWindowUI.createNormalFont();
-        Font customTitleFont = StartWindowUI.createTitleFont();
+        Font customRegularFont = StartWindowUI.createCustomFont(15f);
+        Font customTitleFont = StartWindowUI.createCustomFont(25f);
 
         messengerWindowFrame = new JFrame();
         messengerWindowFrame.setIconImage(new ImageIcon("Images/Chatty.png").getImage());
@@ -65,32 +65,31 @@ public class MessengerWindowUI {
     }
     private static ImageIcon getIcon(String iconPath, int width, int height) {
         ImageIcon imageIcon = new ImageIcon(iconPath);
-        Image newimg = imageIcon.getImage().getScaledInstance(width, height, java.awt.Image.SCALE_SMOOTH);
-        return new ImageIcon(newimg);
+        Image newImage = imageIcon.getImage().getScaledInstance(width, height, java.awt.Image.SCALE_SMOOTH);
+        return new ImageIcon(newImage);
     }
     public static void enterMessage(String message, String nickname){
         JScrollBar vertical = MessengerWindowUI.scrollFrame.getVerticalScrollBar();
 
         JLabel messageInfo = new JLabel();
         if(LocalTime.now().getMinute() < 10){
-            messageInfo.setText(LoginWindow.nickname + " - " + LocalTime.now().getHour() + ":0"+LocalTime.now().getMinute());
+            messageInfo.setText(nickname + " - " + LocalTime.now().getHour() + ":0"+LocalTime.now().getMinute());
         }
         else{
             messageInfo.setText(nickname + " - " + LocalTime.now().getHour() + ":"+LocalTime.now().getMinute());
         }
-        messageInfo.setFont(StartWindowUI.createLabelFont());
+        messageInfo.setFont(StartWindowUI.createCustomFont(10f));
         messageInfo.setForeground(Color.decode("#E9E8E8"));
 
         RoundJTextArea text = new RoundJTextArea(message, 1, 1);
         text.setLocation(15, vertical.getMaximum());
-        text.setMaximumSize(new Dimension(280, 80));
         text.setPreferredSize(new Dimension(280, 80));
         text.setEditable(false);
         text.setMargin( new Insets(0,5,0,0) );
         text.setLineWrap( true );
         text.setWrapStyleWord( true );
         text.setBackground(Color.decode("#E9E8E8"));
-        text.setFont(StartWindowUI.createNormalFont());
+        text.setFont(StartWindowUI.createCustomFont(15f));
         text.setForeground(Color.black);
 
         if(nickname.equals(LoginWindow.nickname)){
